@@ -1,13 +1,12 @@
-## This file will consolidate all exercises from Chapter 5
-## of Computational Physics into this program.
-## This section here is for Python Implementation.
+## This file will use the lessons learned from the Chapter 5 Exercises and calculate how long
+## it takes for a person to fall to the ground, first without a parachute and then with one
+## deployed on the way down.
 
 ## Importations:
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.integrate import quad
 import time
-import subprocess
 
 """-----Recording How Long The Program Runs For------"""
 start_time = time.perf_counter()
