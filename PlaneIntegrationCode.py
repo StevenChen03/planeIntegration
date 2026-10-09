@@ -6,6 +6,13 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.integrate import quad
+import time
+import subprocess
+
+"""-----Recording How Long The Program Runs For------"""
+start_time = time.perf_counter()
+"""--------------------------------------------------"""
+
 
 ## Step 2: Start by writing some code to compute the position at any time
 ## assuming v_t=54.0  m⁄s, i.e. have it calculate the integral of
@@ -42,10 +49,10 @@ print("--- Validation Check ---")
 print(f"At t = {t_val} s, position x = {x_val:.7f} m")
 print(f"Target x was approx 0.0001225 m. Diff: {abs(x_val - 0.0001225):.7f} m\n")
 
-## Once that is working, modify your code to generate a list of positions versus times
-##(use two arrays, one for position, one for time). Create a loop that will compute these
-##positions and times until you hit the ground assuming that you didn’t open your parachute.
-##Use a starting height of 4000 m. Create a plot of this data. You may also want to output the#
+## Step 2: Once that is working, modify your code to generate a list of positions versus times
+## (use two arrays, one for position, one for time). Create a loop that will compute these
+## positions and times until you hit the ground assuming that you didn’t open your parachute.
+## Use a starting height of 4000 m. Create a plot of this data. You may also want to output the#
 ## data to a file for later use.
 
 # --- Step 2: Loop from 4000 m until hitting the ground ---
@@ -101,7 +108,7 @@ plt.clf() ## This helps clears the previous graph and make room for the second g
 
 
 
-## Now, lets assume that you do deploy your parachute at a height of 1200 m. It takes a few seconds
+## Step 3: Now, lets assume that you do deploy your parachute at a height of 1200 m. It takes a few seconds
 ## for the chute to fully deploy, and during that time your terminal velocity will be changing.
 ## This would create a problem that would be much more difficult to solve analytically as we would
 ## have two variables changing in time. However, we can solve this numerically by making a simple assumption:
@@ -115,18 +122,17 @@ plt.clf() ## This helps clears the previous graph and make room for the second g
 ## be. Compute a time step that will keep the change in terminal velocity to about 10^(-6) during that step.
 
 
-## Modify your code so that after the appropriate distance fallen, your chute deploys. Your terminal velocity starts to change at 
+## Step 4: Modify your code so that after the appropriate distance fallen, your chute deploys. Your terminal velocity starts to change at 
 ## the rate you just computed. Your code should now compute the change in position for each time step based on the estimated terminal
 ## velocity at that time. Make sure that your code goes to the purely constant terminal velocity of 7.6  m⁄s once that is reached,
 ## and back to a larger time step so that your code doesn’t take forever to finish. Make sure that you compute how long it takes to
 ## go from 54.0  m⁄s to 7.6  m⁄s and check that it agrees with our assumption of 3 seconds. How far did you fall while the chute was
 ## deploying?
 
-## Make sure that your code still tracks the position versus time for the whole trip. 
+## Step 5: Make sure that your code still tracks the position versus time for the whole trip. 
 ## Plot this data once the ground is reached. You may also want to output this data to a file for later use.
 
 # Constants
-G = 9.8
 V_T0 = 54.0       # Initial terminal velocity (m/s)
 V_TF = 7.6        # Final terminal velocity with open chute (m/s)
 T_DEPLOY = 3.0    # Deployment duration (s)
@@ -234,3 +240,12 @@ plt.ylabel("Altitude / Position (meters)")
 plt.grid(True)
 plt.legend()
 plt.savefig("Gravity_Two_graph.pdf")
+
+
+## This section here records the time it takes for the program to fully run its code
+## since there's so much of it here. Make sure it records only one program execution.
+
+"""-----Recording How Long The Program Runs For------"""
+end_time = time.perf_counter()
+print(f"Execution time: {end_time - start_time:.4f} seconds")
+"""--------------------------------------------------"""
