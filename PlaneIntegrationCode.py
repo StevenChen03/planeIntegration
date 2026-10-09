@@ -61,26 +61,26 @@ t_current = 0.0
 x_current = h_start
 
 # Arrays to store positions and times
-times = []
-positions = []
+times_1 = []
+positions_1 = []
 
 while x_current > 0:
-    times.append(t_current)
-    positions.append(x_current)
+    times_1.append(t_current)
+    positions_1.append(x_current)
     
     t_current += dt
     x_current = get_position(t_current, h_start)
 
 # Append the final boundary point where it hits the ground
-if positions[-1] > 0:
+if positions_1[-1] > 0:
     # Fine-tune the last time step to hit exactly 0 (using a simple approximation)
-    t_final = times[-1] + (positions[-1] / VT)
-    times.append(t_final)
-    positions.append(0.0)
+    t_final = times_1[-1] + (positions_1[-1] / VT)
+    times_1.append(t_final)
+    positions_1.append(0.0)
 
 # Convert to numpy arrays
-times = np.array(times)
-positions = np.array(positions)
+times = np.array(times_1)
+positions = np.array(positions_1)
 
 print("--- Simulation Run ---")
 print(f"Total time to hit the ground from {h_start}m: {times[-1]:.4f} seconds.")
@@ -94,7 +94,7 @@ print(f"Trajectory data successfully saved to '{output_filename}'")
 
 # --- Step 4: Plotting the data ---
 plt.figure(figsize=(8, 5))
-plt.plot(times, positions, label="Altitude (No Parachute)", color="blue", linewidth=2)
+plt.plot(times_1, positions_1, label="Altitude (No Parachute)", color="blue", linewidth=2)
 plt.title("Skydiver Position vs. Time (Initial Height = 4000m)")
 plt.xlabel("Time (seconds)")
 plt.ylabel("Position / Altitude (meters)")
@@ -151,8 +151,8 @@ h = 4000.0   # Initial height (m)
 v = 0.0      # Initial velocity (m/s)
 
 # Lists to track the whole trip
-times = []
-positions = []
+times_2 = []
+positions_2 = []
 velocities = []
 
 # Time step configurations
@@ -167,8 +167,8 @@ h_chute_end = 0.0
 
 # --- Simulation Loop ---
 while h > 0:
-    times.append(t)
-    positions.append(h)
+    times_2.append(t)
+    positions_2.append(h)
     velocities.append(v)
     
     # Determine the active terminal velocity and time step
@@ -209,8 +209,8 @@ while h > 0:
     t += dt
 
 # Ensure ground condition ends cleanly at exactly 0m
-times.append(t)
-positions.append(0.0)
+times_2.append(t)
+positions_2.append(0.0)
 velocities.append(v)
 
 print(f"--- Ground Reached ---")
@@ -218,14 +218,14 @@ print(f"Total time for the entire descent: {t:.2f} seconds.")
 
 # --- Save Data to File ---
 output_filename = "parachute_descent_trajectory.txt"
-data_to_save = np.column_stack((times, positions, velocities))
+data_to_save = np.column_stack((times_2, positions_2, velocities))
 np.savetxt(output_filename, data_to_save, fmt="%.4f", 
            header="Time(s) Position(m) Velocity(m/s)")
 print(f"Full trajectory data successfully saved to '{output_filename}'\n")
 
 # --- Plot the Trajectory ---
 plt.figure(figsize=(10, 6))
-plt.plot(times, positions, color='blue', linewidth=2.5, label='Skydiver Altitude')
+plt.plot(times_2, positions_2, color='blue', linewidth=2.5, label='Skydiver Altitude')
 plt.axhline(CHUTE_HEIGHT, color='orange', linestyle=':', label='Chute Deployment Trigger (1200m)')
 plt.axhline(0, color='red', linestyle='--', label='Ground Level')
 
