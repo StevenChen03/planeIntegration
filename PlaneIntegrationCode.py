@@ -26,9 +26,9 @@ start_time = time.perf_counter()
 ## the equation properly and have it properly evaluating the integral.
 ## For the integration, I’d recommend using a library function.
 
-# Constants
-G = 9.8         # Acceleration due to gravity (m/s^2)
-VT = 54.0       # Terminal velocity (m/s)
+## Constants
+G = 9.8         ## Acceleration due to gravity (m/s^2)
+VT = 54.0       ## Terminal velocity (m/s)
 
 def integrand(t):
     """The velocity equation to be integrated."""
@@ -36,11 +36,11 @@ def integrand(t):
 
 def get_position(t, h_initial):
     """Calculates the position x at time t given an initial height."""
-    # quad returns a tuple: (integral value, absolute error estimate)
+    ## quad returns a tuple: (integral value, absolute error estimate)
     integral, _ = quad(integrand, 0, t)
     return h_initial - VT * integral
 
-# --- Step 1: Validation Check ---
+## --- Part 1: Validation Check ---
 h_val = 1400.0
 t_val = 29.74519
 x_val = get_position(t_val, h_val)
@@ -48,19 +48,19 @@ print("--- Validation Check ---")
 print(f"At t = {t_val} s, position x = {x_val:.7f} m")
 print(f"Target x was approx 0.0001225 m. Diff: {abs(x_val - 0.0001225):.7f} m\n")
 
-## Step 2: Once that is working, modify your code to generate a list of positions versus times
+## Step 3: Once that is working, modify your code to generate a list of positions versus times
 ## (use two arrays, one for position, one for time). Create a loop that will compute these
 ## positions and times until you hit the ground assuming that you didn’t open your parachute.
 ## Use a starting height of 4000 m. Create a plot of this data. You may also want to output the#
 ## data to a file for later use.
 
-# --- Step 2: Loop from 4000 m until hitting the ground ---
+## --- Part 2: Loop from 4000 m until hitting the ground ---
 h_start = 4000.0
-dt = 0.5  # Time step in seconds
+dt = 0.5  ## Time step in seconds
 t_current = 0.0
 x_current = h_start
 
-# Arrays to store positions and times
+## Arrays to store positions and times
 times_1 = []
 positions_1 = []
 
@@ -71,28 +71,28 @@ while x_current > 0:
     t_current += dt
     x_current = get_position(t_current, h_start)
 
-# Append the final boundary point where it hits the ground
+## Append the final boundary point where it hits the ground
 if positions_1[-1] > 0:
-    # Fine-tune the last time step to hit exactly 0 (using a simple approximation)
+    ## Fine-tune the last time step to hit exactly 0 (using a simple approximation)
     t_final = times_1[-1] + (positions_1[-1] / VT)
     times_1.append(t_final)
     positions_1.append(0.0)
 
-# Convert to numpy arrays
+## Convert to numpy arrays
 times = np.array(times_1)
 positions = np.array(positions_1)
 
 print("--- Simulation Run ---")
 print(f"Total time to hit the ground from {h_start}m: {times[-1]:.4f} seconds.")
 
-# --- Step 3: Output data to a file ---
+## --- Part 3: Output data to a file ---
 output_filename = "skydive_trajectory.txt"
-# Stack data columns horizontally and save
+## Stack data columns horizontally and save
 data_to_save = np.column_stack((times, positions))
 np.savetxt(output_filename, data_to_save, fmt="%.4f", header="Time(s) Position(m)")
 print(f"Trajectory data successfully saved to '{output_filename}'")
 
-# --- Step 4: Plotting the data ---
+## --- Part 4: Plotting the data ---
 plt.figure(figsize=(8, 5))
 plt.plot(times_1, positions_1, label="Altitude (No Parachute)", color="blue", linewidth=2)
 plt.title("Skydiver Position vs. Time (Initial Height = 4000m)")
@@ -107,7 +107,7 @@ plt.clf() ## This helps clears the previous graph and make room for the second g
 
 
 
-## Step 3: Now, lets assume that you do deploy your parachute at a height of 1200 m. It takes a few seconds
+## Step 4: Now, lets assume that you do deploy your parachute at a height of 1200 m. It takes a few seconds
 ## for the chute to fully deploy, and during that time your terminal velocity will be changing.
 ## This would create a problem that would be much more difficult to solve analytically as we would
 ## have two variables changing in time. However, we can solve this numerically by making a simple assumption:
@@ -121,43 +121,43 @@ plt.clf() ## This helps clears the previous graph and make room for the second g
 ## be. Compute a time step that will keep the change in terminal velocity to about 10^(-6) during that step.
 
 
-## Step 4: Modify your code so that after the appropriate distance fallen, your chute deploys. Your terminal velocity starts to change at 
+## Step 5: Modify your code so that after the appropriate distance fallen, your chute deploys. Your terminal velocity starts to change at 
 ## the rate you just computed. Your code should now compute the change in position for each time step based on the estimated terminal
 ## velocity at that time. Make sure that your code goes to the purely constant terminal velocity of 7.6  m⁄s once that is reached,
 ## and back to a larger time step so that your code doesn’t take forever to finish. Make sure that you compute how long it takes to
 ## go from 54.0  m⁄s to 7.6  m⁄s and check that it agrees with our assumption of 3 seconds. How far did you fall while the chute was
 ## deploying?
 
-## Step 5: Make sure that your code still tracks the position versus time for the whole trip. 
+## Step 6: Make sure that your code still tracks the position versus time for the whole trip. 
 ## Plot this data once the ground is reached. You may also want to output this data to a file for later use.
 
-# Constants
-V_T0 = 54.0       # Initial terminal velocity (m/s)
-V_TF = 7.6        # Final terminal velocity with open chute (m/s)
-T_DEPLOY = 3.0    # Deployment duration (s)
-CHUTE_HEIGHT = 1200.0  # Height at which chute is pulled (m)
+## Constants
+V_T0 = 54.0       ## Initial terminal velocity (m/s)
+V_TF = 7.6        ## Final terminal velocity with open chute (m/s)
+T_DEPLOY = 3.0    ## Deployment duration (s)
+CHUTE_HEIGHT = 1200.0  ## Height at which chute is pulled (m)
 
-# 1. Calculate rate of change of terminal velocity
+## 1. Calculate rate of change of terminal velocity
 rate_vt = (V_TF - V_T0) / T_DEPLOY
 print(f"Calculated rate of change of terminal velocity: {rate_vt:.4f} m/s^2")
 
-# 2. Calculate requested theoretical time step
+## 2. Calculate requested theoretical time step
 dt_theoretical = 1e-6 / abs(rate_vt)
 print(f"Theoretical time step for 10^-6 vt change: {dt_theoretical:.4e} seconds\n")
 
-# Simulation setup
+## Simulation setup
 t = 0.0
-h = 4000.0   # Initial height (m)
-v = 0.0      # Initial velocity (m/s)
+h = 4000.0   ## Initial height (m)
+v = 0.0      ## Initial velocity (m/s)
 
-# Lists to track the whole trip
+## Lists to track the whole trip
 times_2 = []
 positions_2 = []
 velocities = []
 
-# Time step configurations
+## Time step configurations
 dt_normal = 0.1
-dt_deploy = 0.001  # Used for efficient execution while preserving sub-millisecond accuracy
+dt_deploy = 0.001  ## Used for efficient execution while preserving sub-millisecond accuracy
 
 chute_triggered = False
 chute_fully_open = False
@@ -165,13 +165,13 @@ t_chute_start = 0.0
 h_chute_start = 0.0
 h_chute_end = 0.0
 
-# --- Simulation Loop ---
+## --- Simulation Loop ---
 while h > 0:
     times_2.append(t)
     positions_2.append(h)
     velocities.append(v)
     
-    # Determine the active terminal velocity and time step
+    ## Determine the active terminal velocity and time step
     if h <= CHUTE_HEIGHT and not chute_triggered:
         chute_triggered = True
         t_chute_start = t
@@ -199,16 +199,16 @@ while h > 0:
         vt = V_T0
         dt = dt_normal
 
-    # Numerical integration using constant acceleration kinematics over dt
-    # Acceleration equation: dv/dt = g * (1 - (v/v_t)^2)
+    ## Numerical integration using constant acceleration kinematics over dt
+    ## Acceleration equation: dv/dt = g * (1 - (v/v_t)^2)
     accel = G * (1.0 - (v / vt)**2)
     
-    # Update velocity and position
+    ## Update velocity and position
     v += accel * dt
     h -= v * dt
     t += dt
 
-# Ensure ground condition ends cleanly at exactly 0m
+## Ensure ground condition ends cleanly at exactly 0m
 times_2.append(t)
 positions_2.append(0.0)
 velocities.append(v)
@@ -216,20 +216,20 @@ velocities.append(v)
 print(f"--- Ground Reached ---")
 print(f"Total time for the entire descent: {t:.2f} seconds.")
 
-# --- Save Data to File ---
+## --- Save Data to File ---
 output_filename = "parachute_descent_trajectory.txt"
 data_to_save = np.column_stack((times_2, positions_2, velocities))
 np.savetxt(output_filename, data_to_save, fmt="%.4f", 
            header="Time(s) Position(m) Velocity(m/s)")
 print(f"Full trajectory data successfully saved to '{output_filename}'\n")
 
-# --- Plot the Trajectory ---
+## --- Plot the Trajectory ---
 plt.figure(figsize=(10, 6))
 plt.plot(times_2, positions_2, color='blue', linewidth=2.5, label='Skydiver Altitude')
 plt.axhline(CHUTE_HEIGHT, color='orange', linestyle=':', label='Chute Deployment Trigger (1200m)')
 plt.axhline(0, color='red', linestyle='--', label='Ground Level')
 
-# Visual markers for deployment phase
+## Visual markers for deployment phase
 plt.plot(t_chute_start, h_chute_start, 'go', label='Chute Pull')
 plt.plot(t_chute_start + T_DEPLOY, h_chute_end, 'ro', label='Fully Open')
 
